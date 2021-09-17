@@ -110,9 +110,9 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	}
 
 	
-	public List<CustomerAccount> selectAllUnapprovedAccounts() {
+	public List<String> selectAllUnapprovedAccounts() {
 
-		List<CustomerAccount> unapprovedAccountList = new ArrayList<>();
+		List<String> unapprovedAccountList = new ArrayList<>();
 		
 		try(Connection connection = DriverManager.getConnection(url, username, password)) {
 			String sql = "SELECT customer_username FROM customers WHERE isApproved = ?";
@@ -126,7 +126,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			int i = 0;
 			
 			while(rs.next()) {
-				unapprovedAccountList.set(i, new CustomerAccount(rs.getString("customer_username")));
+				unapprovedAccountList.set(i, rs.getString("customer_username"));
 				
 				i++;
 			}

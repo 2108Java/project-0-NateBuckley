@@ -86,7 +86,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	
-	public boolean insertJoin(String customerUsername1, String customerUsername, double amount) {
+	public boolean insertJoint(String customerUsername1, String customerUsername, double amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}

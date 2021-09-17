@@ -19,6 +19,10 @@ public class EmployeeAccount implements Account {
 		this.password = password;
 		this.isAdmin = isAdmin;
 	}
+	
+	public EmployeeAccount() {
+		super();
+	}
 
 	public String getUsername() {
 		return username;
@@ -28,7 +32,7 @@ public class EmployeeAccount implements Account {
 		return password;
 	}
 
-	public boolean isAdmin() {
+	public boolean getIsAdmin() {
 		return isAdmin;
 	}
 }

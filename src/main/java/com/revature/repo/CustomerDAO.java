@@ -14,7 +14,7 @@ public interface CustomerDAO {
 	
 	public boolean insertChecking(String customerUsername, double amount);
 	
-	public boolean insertJoin(String customerUsername1, String customerUsername, double amount);
+	public boolean insertJoint(String customerUsername1, String customerUsername, double amount);
 	
 	public CustomerAccount selectAccount(String customerUsername);
 	

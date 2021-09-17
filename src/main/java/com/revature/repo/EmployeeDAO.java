@@ -14,9 +14,9 @@ public interface EmployeeDAO {
 	
 	public boolean updateApplicationRejected(String employeeUsername);
 	
-	public CustomerAccount selectCustomerAccount(String employeeUsername);
+	public CustomerAccount selectCustomerAccount(String customerUsername);
 	
-	public List<CustomerAccount> selectAllUnapprovedAccounts();
+	public List<String> selectAllUnapprovedAccounts();
 	
 	public void viewTransactionLog();
 }
