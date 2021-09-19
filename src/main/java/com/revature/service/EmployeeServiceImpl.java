@@ -1,46 +1,67 @@
 package com.revature.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.models.CustomerAccount;
 import com.revature.models.EmployeeAccount;
+import com.revature.repo.CustomerDAO;
+import com.revature.repo.CustomerDAOImpl;
+import com.revature.repo.EmployeeDAO;
+import com.revature.repo.EmployeeDAOImpl;
 
 public class EmployeeServiceImpl implements EmployeeService {
 
+	EmployeeDAO eDao = new EmployeeDAOImpl();
+	CustomerDAO cDao = new CustomerDAOImpl();
+	
 	@Override
 	public boolean authenticate(String employeeUsername, String employeePassword) {
-		// TODO Auto-generated method stub
+		EmployeeAccount employeeAccount = new EmployeeAccount();
+		employeeAccount = eDao.selectAccountByUsername(employeeUsername);
+		if(employeeAccount != null && employeeAccount.getPassword() != null && employeeAccount.getPassword().equals(employeePassword)) {
+			return true;
+		}
+		
 		return false;
 	}
 
 	@Override
 	public EmployeeAccount login(String employeeUsername, String employeePassword) {
-		// TODO Auto-generated method stub
-		return null;
+		EmployeeAccount account = new EmployeeAccount();
+		account = eDao.selectAccountByUsername(employeeUsername);
+		
+		return account;
 	}
 
 	@Override
 	public boolean acceptApplication(String customerUsername) {
-		// TODO Auto-generated method stub
+		if(eDao.updateApplicationAccepted(customerUsername)) {
+			return true;
+		}
+		
 		return false;
 	}
 
 	@Override
 	public boolean rejectApplication(String customerUsername) {
-		// TODO Auto-generated method stub
+		CustomerAccount cAccount = new CustomerAccount();
+		cAccount = cDao.selectAccount(customerUsername);
+		if(!cAccount.isApproved()) {
+			eDao.updateApplicationRejected(customerUsername);
+			return true;
+		} else {
+			System.out.println("That account was already approved.");
+		}
+		
 		return false;
 	}
 
 	@Override
-	public CustomerAccount getCustomerAccount(String customerUsername) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<String> getAllUnapprovedAccounts() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> unapprovedList = new ArrayList<>();
+		unapprovedList = eDao.selectAllUnapprovedAccounts();
+		return unapprovedList;
 	}
 
 	@Override

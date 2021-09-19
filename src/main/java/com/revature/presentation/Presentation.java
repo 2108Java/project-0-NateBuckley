@@ -14,10 +14,10 @@ import com.revature.service.EmployeeServiceImpl;
 
 public class Presentation {
 	
-	private CustomerService customerService = new CustomerServiceImpl();
-	private EmployeeService employeeService = new EmployeeServiceImpl();
-	private NumberFormat formatter = NumberFormat.getCurrencyInstance();
-	private Scanner sc = new Scanner(System.in);
+	private final CustomerService customerService = new CustomerServiceImpl();
+	private final EmployeeService employeeService = new EmployeeServiceImpl();
+	private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
+	private final Scanner sc = new Scanner(System.in);
 	
 	private void prettyDisplayOfUnapprovedCustomers(List<String> accounts) {
 		for(int i = 0; i < accounts.size(); i++) {
@@ -62,7 +62,9 @@ public class Presentation {
 						EmployeeAccount employeeAccount = new EmployeeAccount();
 						employeeAccount = employeeService.login(username, password);
 						if(employeeAccount.getIsAdmin()) {
-							displayAdminMainMenu();
+							CustomerAccount adminCustomerAccount = new CustomerAccount();
+							adminCustomerAccount = customerService.login(username, password);
+							displayAdminMainMenu(adminCustomerAccount);
 							isRunning = false;
 						} else {
 							displayEmployeeMainMenu();
@@ -192,11 +194,18 @@ public class Presentation {
 						System.out.println("Input the starting balance:");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
-							if(customerService.createNewChecking(customerAccount.getUsername(), amount)) {
-								System.out.println("Checking account sucessfully created!");
+							if(amount > 0) {
+								if(customerService.createNewChecking(customerAccount.getUsername(), amount)) {
+									System.out.println("Checking account sucessfully created!");
+									double newAmount = customerAccount.getCheckingBalance() + amount;
+									customerAccount.setCheckingBalance(newAmount);
+								} else {
+									System.out.println("Something went wrong!");
+								}
 							} else {
-								System.out.println("Something went wrong!");
+								System.out.println("You must input a number greater than zero.");
 							}
+							
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
@@ -212,11 +221,18 @@ public class Presentation {
 						System.out.println("Input the starting balance:");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
-							if(customerService.createNewSavings(customerAccount.getUsername(), amount)) {
-								System.out.println("Checking account sucessfully created!");
+							if(amount > 0) {
+								
 							} else {
-								System.out.println("Something went wrong!");
+								System.out.println("You must input a number greater than zero.");
 							}
+								if(customerService.createNewSavings(customerAccount.getUsername(), amount)) {
+									System.out.println("Checking account sucessfully created!");
+									double newAmount = customerAccount.getSavingsBalance() + amount;
+									customerAccount.setSavingsBalance(newAmount);
+								} else {
+									System.out.println("Something went wrong!");
+								}
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
@@ -240,10 +256,14 @@ public class Presentation {
 									System.out.println("How much do you want to add as a starting amount?");
 									try {
 										amount = Double.parseDouble(sc.nextLine());
-										if(customerService.createNewJoint(customerAccount.getUsername(), secondAccount.getUsername(), amount)) {
-											System.out.println("Joint account sucessfully created!");
+										if(amount > 0) {
+											if(customerService.createNewJoint(customerAccount.getUsername(), secondAccount.getUsername(), amount)) {
+												System.out.println("Joint account sucessfully created!");
+											} else {
+												System.out.println("Something went wrong!");
+											}
 										} else {
-											System.out.println("Something went wrong!");
+											System.out.println("You must input a number greater than zero.");
 										}
 									} catch(NumberFormatException e) {
 										System.out.println("Invalid number.");
@@ -262,56 +282,79 @@ public class Presentation {
 					}
 					break;
 				case "4":
-					if(customerAccount.getJointBalance() != 0) {
+					if(customerAccount.getCheckingBalance() != 0) {
 						System.out.println("How much do you want to add to your checking account?");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
+							if(amount > 0) {
+								customerAccount = this.depositChecking(customerAccount, amount);
+							} else {
+								System.out.println("You must input a number greater than zero.");
+							}
+							
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
 					} else {
 						System.out.println("You don't have a checking account.");
 					}
-					customerAccount = this.depositChecking(customerAccount, amount);
+					
 					break;
 				case "5":
 					if(customerAccount.getSavingsBalance() != 0) {
 						System.out.println("How much do you want to add to your savings account?");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
+							if(amount > 0) {
+								customerAccount = this.depositSavings(customerAccount, amount);
+							} else {
+								System.out.println("You must input a number greater than zero.");
+							}
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
 					} else {
 						System.out.println("You don't have a savings account.");
 					}
-					customerAccount = this.depositSavings(customerAccount, amount);
+					
 					break;
 				case "6":
 					if(customerAccount.getJointBalance() != 0) {
 						System.out.println("How much do you want to add to your joint account?");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
+							if(amount > 0) {
+								this.depositJoint(customerAccount, amount);
+								double newAmount = customerAccount.getJointBalance() + amount;
+								customerAccount.setJointBalance(newAmount);
+							} else {
+								System.out.println("You must input a number greater than zero.");
+							}
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
 					} else {
 						System.out.println("You don't have a joint account.");
 					}
-					this.depositJoint(customerAccount, amount);
+					
 					break;
 				case "7":
 					if(customerAccount.getCheckingBalance() != 0) {
 						System.out.println("How much do you want to withdraw from your checking account?");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
-							if(customerService.withdrawalChecking(customerAccount.getUsername(), amount)) {
-								System.out.println("Money successfully removed from your checking account!");
-								double newAmount = customerAccount.getCheckingBalance() - amount;
-								customerAccount.setCheckingBalance(newAmount);
+							if(amount > 0) {
+								if(customerService.withdrawalChecking(customerAccount.getUsername(), amount)) {
+									System.out.println("Money successfully removed from your checking account!");
+									double newAmount = customerAccount.getCheckingBalance() - amount;
+									customerAccount.setCheckingBalance(newAmount);
+								} else {
+									System.out.println("Something went wrong!");
+								}
 							} else {
-								System.out.println("Something went wrong!");
+								System.out.println("You must input a number greater than zero.");
 							}
+								
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
@@ -324,13 +367,18 @@ public class Presentation {
 						System.out.println("How much do you want to withdraw from your savings account?");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
-							if(customerService.withdrawalSavings(customerAccount.getUsername(), amount)) {
-								System.out.println("Money successfully removed from your savings account!");
-								double newAmount = customerAccount.getSavingsBalance() - amount;
-								customerAccount.setSavingsBalance(newAmount);
+							if(amount > 0) {
+								if(customerService.withdrawalSavings(customerAccount.getUsername(), amount)) {
+									System.out.println("Money successfully removed from your savings account!");
+									double newAmount = customerAccount.getSavingsBalance() - amount;
+									customerAccount.setSavingsBalance(newAmount);
+								} else {
+									System.out.println("Something went wrong!");
+								}
 							} else {
-								System.out.println("Something went wrong!");
+								System.out.println("You must input a number greater than zero.");
 							}
+								
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
@@ -343,13 +391,18 @@ public class Presentation {
 						System.out.println("How much do you want to withdraw your joint account?");
 						try {
 							amount = Double.parseDouble(sc.nextLine());
-							if(customerService.withdrawalJoint(customerAccount.getUsername(), amount)) {
-								System.out.println("Money successfully removed from your joint account!");
-								double newAmount = customerAccount.getJointBalance() - amount;
-								customerAccount.setJointBalance(newAmount);
+							if(amount > 0) {
+								if(customerService.withdrawalJoint(customerAccount.getUsername(), amount)) {
+									System.out.println("Money successfully removed from your joint account!");
+									double newAmount = customerAccount.getJointBalance() - amount;
+									customerAccount.setJointBalance(newAmount);
+								} else {
+									System.out.println("Something went wrong!");
+								}
 							} else {
-								System.out.println("Something went wrong!");
+								System.out.println("You must input a number greater than zero.");
 							}
+								
 						} catch(NumberFormatException e) {
 							System.out.println("Invalid number.");
 						}
@@ -369,10 +422,14 @@ public class Presentation {
 							System.out.println("How much would you like to transfer?");
 							try {
 								amount = Double.parseDouble(sc.nextLine());
-								if(customerService.createNewMoneyTransfer(customerAccount.getUsername(), secondAccount.getUsername(), amount)) {
-									System.out.println("Money successfully transferred!");
+								if(amount > 0) {
+									if(customerService.createNewMoneyTransfer(customerAccount.getUsername(), secondAccount.getUsername(), amount)) {
+										System.out.println("Money successfully transferred!");
+									} else {
+										System.out.println("Something went wrong!");
+									}
 								} else {
-									System.out.println("Something went wrong!");
+									System.out.println("You must input a number greater than zero.");
 								}
 							} catch(NumberFormatException e) {
 								System.out.println("Invalid number.");
@@ -494,7 +551,39 @@ public class Presentation {
 		}
 	}
 	
-	private void displayAdminMainMenu() {
+	private void displayAdminMainMenu(CustomerAccount adminCustomerAccount) {
+		
+		boolean isRunning = true;
+		
+		while(isRunning) {
+			System.out.println(" ");
+			System.out.println("Welcome, my lord.");
+			System.out.println("What do you want to do? (Input the number for your decision)");
+			System.out.println("1) Access the employee menu");
+			System.out.println("2) Access the customer menu");
+			System.out.println("3) Exit");
+			System.out.println(" ");
+			
+			String result = sc.nextLine();
+			switch(result) {
+				case "1":
+					displayEmployeeMainMenu();
+					break;
+				case "2":
+					adminCustomerAccount = customerService.getAccount(adminCustomerAccount.getUsername());
+					displayCustomerMainMenu(adminCustomerAccount);
+					break;
+				case "3":
+					System.out.println("Thank you for checking in, my lord.");
+					isRunning = false;
+					break;
+				default:
+					System.out.println("Sorry, but that isn't an acceptable input");
+					break;
+			}
+		}
+		
+		
 		
 	}
 }

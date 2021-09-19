@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.models.CustomerAccount;
+import com.revature.models.EmployeeAccount;
 
 public class EmployeeDAOImpl implements EmployeeDAO {
 
@@ -17,14 +18,36 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	String username = "postgres";
 	String password = "k0lj3rak";
 	
-	public boolean authenticate(String employeeUsername, String employeePassword) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public boolean login(String employeeUsername, String employeePassword) {
-		// TODO Auto-generated method stub
-		return false;
+	@Override
+	public EmployeeAccount selectAccountByUsername(String employeeUsername) {
+		
+		EmployeeAccount account = new EmployeeAccount();
+		
+try(Connection connection = DriverManager.getConnection(url, username, password)) {
+			
+			String sql = "SELECT * FROM employees WHERE employee_username = ?";
+			
+			PreparedStatement ps = connection.prepareStatement(sql);
+			
+			ps.setString(1, employeeUsername);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				account = new EmployeeAccount(
+						rs.getString("employee_username"),
+						rs.getString("employee_password"),
+						rs.getBoolean("isAdmin")
+						);
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return account;
 	}
 
 	public boolean updateApplicationAccepted(String customerUsername) {
@@ -66,44 +89,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return false;
 	}
 
-	public CustomerAccount selectCustomerAccount(String customerUsername) {
-		
-		CustomerAccount account = new CustomerAccount();
-		
-		try(Connection connection = DriverManager.getConnection(url, username, password)) {
-			
-			String sql = "SELECT customer_username, checking_balance, savings_balance, joint_balance, isApproved "
-					+ "FROM customers "
-					+ "LEFT JOIN checking_balance ON customer.customer_username = checking.checking_id "
-					+ "LEFT JOIN savings_balance ON customer.customer_username = savings.savings_id "
-					+ "LEFT JOIN joint_balance ON customer.customer_username = joint.joint_id "
-					+ "WHERE customer_username = ?";
-			
-			PreparedStatement ps = connection.prepareStatement(sql);
-			
-			ps.setString(1, customerUsername);
-			
-			ResultSet rs = ps.executeQuery();
-			
-			while(rs.next()) {
-				account = new CustomerAccount(
-						rs.getString("customer_username"),
-						rs.getDouble("checking_balance"),
-						rs.getDouble("savings_balance"),
-						rs.getDouble("joint_balance"),
-						rs.getBoolean("isApproved")
-						);
-			}
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return account;
-	}
-
 	public void viewTransactionLog() {
 		// TODO Auto-generated method stub
 
@@ -126,7 +111,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			int i = 0;
 			
 			while(rs.next()) {
-				unapprovedAccountList.set(i, rs.getString("customer_username"));
+				unapprovedAccountList.add(i, rs.getString("customer_username"));
 				
 				i++;
 			}

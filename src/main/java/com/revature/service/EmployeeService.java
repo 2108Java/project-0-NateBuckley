@@ -15,8 +15,6 @@ public boolean authenticate(String employeeUsername, String employeePassword);
 	
 	public boolean rejectApplication(String customerUsername);
 	
-	public CustomerAccount getCustomerAccount(String customerUsername);
-	
 	public List<String> getAllUnapprovedAccounts();
 	
 	public void viewTransactionLog();

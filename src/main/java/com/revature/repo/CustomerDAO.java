@@ -1,22 +1,22 @@
 package com.revature.repo;
 
+import java.util.List;
+
 import com.revature.models.CustomerAccount;
 
 public interface CustomerDAO {
 	
-	public boolean authenticate(String customerUsername, String customerPassword);
-	
-	public boolean login(String customerUsername, String customerPassword);
-	
 	public boolean insertAccount(CustomerAccount account);
 	
-	public boolean insertSavings(String customerUsername, double amount);
+	public boolean updateSavings(String customerUsername, double amount);
 	
-	public boolean insertChecking(String customerUsername, double amount);
+	public boolean updateChecking(String customerUsername, double amount);
 	
 	public boolean insertJoint(String customerUsername1, String customerUsername, double amount);
 	
 	public CustomerAccount selectAccount(String customerUsername);
+	
+	public List<String> selectAllUsernames();
 	
 	public boolean updateAccountBalanceDepositSavings(String customerUsername, double amount);
 	
@@ -32,6 +32,10 @@ public interface CustomerDAO {
 	
 	public boolean insertAccountTransfer(String giver, String receiver, double amount);
 	
-	public boolean checkPendingAccountTransfer(String customerUsername);
+	public List<String> selectAllTransferReceiverUsernames();
+	
+	public double selectPendingTransferAmountByUsername(String customerUsername);
+	
+	public boolean deletePendingTransferByUsername(String customerUsername);
 
 }

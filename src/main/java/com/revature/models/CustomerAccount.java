@@ -82,5 +82,8 @@ public class CustomerAccount implements Account {
 		this.isApproved = isApproved;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "username: " + this.username + " password: " + this.password + " checking: " + this.checkingBalance + " savings: " + this.savingsBalance + " joint: " + this.jointBalance + " isApproved: " + this.isApproved;
+	}
 }

@@ -35,4 +35,9 @@ public class EmployeeAccount implements Account {
 	public boolean getIsAdmin() {
 		return isAdmin;
 	}
+	
+	@Override
+	public String toString() {
+		return "username: " + this.username + " password: " + this.password + " isAdmin: " + this.isAdmin;
+	}
 }
