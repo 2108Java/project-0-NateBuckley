@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.revature.models.CustomerAccount;
 import com.revature.models.EmployeeAccount;
 
@@ -17,13 +19,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	String url = "jdbc:postgresql://" + server + "/postgres";
 	String username = "postgres";
 	String password = "k0lj3rak";
+	private static final Logger loggy = Logger.getLogger(EmployeeDAOImpl.class);
 	
 	@Override
 	public EmployeeAccount selectAccountByUsername(String employeeUsername) {
 		
 		EmployeeAccount account = new EmployeeAccount();
 		
-try(Connection connection = DriverManager.getConnection(url, username, password)) {
+		try(Connection connection = DriverManager.getConnection(url, username, password)) {
 			
 			String sql = "SELECT * FROM employees WHERE employee_username = ?";
 			
@@ -43,7 +46,7 @@ try(Connection connection = DriverManager.getConnection(url, username, password)
 			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when trying to get an employee account from the database!");
 			e.printStackTrace();
 		}
 		
@@ -63,7 +66,7 @@ try(Connection connection = DriverManager.getConnection(url, username, password)
 			return true;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when trying to accept an application!");
 			e.printStackTrace();
 		}
 		
@@ -82,16 +85,11 @@ try(Connection connection = DriverManager.getConnection(url, username, password)
 			return true;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when rejecting an application!");
 			e.printStackTrace();
 		}
 		
 		return false;
-	}
-
-	public void viewTransactionLog() {
-		// TODO Auto-generated method stub
-
 	}
 
 	
@@ -118,7 +116,7 @@ try(Connection connection = DriverManager.getConnection(url, username, password)
 			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when trying to get the usernames of all unapproved accounts!");
 			e.printStackTrace();
 		}
 		

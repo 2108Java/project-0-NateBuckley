@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import com.revature.models.CustomerAccount;
 import com.revature.models.EmployeeAccount;
 import com.revature.service.CustomerService;
@@ -18,6 +20,7 @@ public class Presentation {
 	private final EmployeeService employeeService = new EmployeeServiceImpl();
 	private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
 	private final Scanner sc = new Scanner(System.in);
+	private static final Logger loggy = Logger.getLogger(Presentation.class);
 	
 	private void prettyDisplayOfUnapprovedCustomers(List<String> accounts) {
 		for(int i = 0; i < accounts.size(); i++) {
@@ -39,11 +42,13 @@ public class Presentation {
 		boolean isRunning = true;
 		
 		while(isRunning) {
+			System.out.println(" ");
+			System.out.println("Welcome!");
 			System.out.println("What do you want to do? (Input the number for your decision)");
 			System.out.println("1) Log in as an employee");
 			System.out.println("2) Log in as a customer");
 			System.out.println("3) Sign up for a new customer account");
-			System.out.println("4) Exit");
+			System.out.println("4) Exit application");
 			System.out.println(" ");
 			
 			String result = sc.nextLine();
@@ -60,15 +65,13 @@ public class Presentation {
 					
 					if(employeeService.authenticate(username, password)) {
 						EmployeeAccount employeeAccount = new EmployeeAccount();
-						employeeAccount = employeeService.login(username, password);
+						employeeAccount = employeeService.login(username);
 						if(employeeAccount.getIsAdmin()) {
 							CustomerAccount adminCustomerAccount = new CustomerAccount();
-							adminCustomerAccount = customerService.login(username, password);
+							adminCustomerAccount = customerService.login(username);
 							displayAdminMainMenu(adminCustomerAccount);
-							isRunning = false;
 						} else {
 							displayEmployeeMainMenu();
-							isRunning = false;
 						}
 						
 					} else {
@@ -84,10 +87,9 @@ public class Presentation {
 					
 					if(customerService.authenticate(username, password)) {
 						CustomerAccount customerAccount = new CustomerAccount();
-						customerAccount = customerService.login(username, password);
+						customerAccount = customerService.login(username);
 						if(customerAccount.isApproved()) {
 							displayCustomerMainMenu(customerAccount);
-							isRunning = false;
 						} else {
 							System.out.println("Sorry, but that account has not been approved yet.");
 						}
@@ -108,7 +110,6 @@ public class Presentation {
 						CustomerAccount customerAccount = new CustomerAccount(username, password);
 						if(customerService.createNewAccount(customerAccount)) {
 							System.out.println("Your account has been created!");
-							isRunning = false;
 						} else {
 							System.out.println("Something went wrong!");
 						}
@@ -119,6 +120,7 @@ public class Presentation {
 					break;
 				case "4":
 					isRunning = false;
+					System.out.println("Shutting down!");
 					break;
 				default:
 					System.out.println("That is not a valid input!");
@@ -168,6 +170,7 @@ public class Presentation {
 		boolean isRunning = true;
 		while(isRunning) {
 			
+			System.out.println(" ");
 			this.displayCustomerAccount(customerAccount);
 			
 			System.out.println(" ");
@@ -469,7 +472,9 @@ public class Presentation {
 					}
 					break;
 				case "12":
+					System.out.println(" ");
 					System.out.println("Thank you for banking with us!");
+					System.out.println(" ");
 					isRunning = false;
 					break;
 				default:
@@ -489,7 +494,7 @@ public class Presentation {
 			System.out.println("2) See a list of all unapproved customer applications.");
 			System.out.println("3) Accept an unapproved customer's application.");
 			System.out.println("4) Reject an unapproved customer's application.");
-			System.out.println("5) View transaction log");
+			System.out.println("5) View log");
 			System.out.println("6) Exit");
 			System.out.println(" ");
 			
@@ -541,6 +546,9 @@ public class Presentation {
 					}
 					break;
 				case "5":
+					System.out.println(" ");
+					employeeService.viewTransactionLog();
+					System.out.println(" ");
 					break;
 				case "6":
 					isRunning = false;

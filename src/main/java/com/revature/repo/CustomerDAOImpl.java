@@ -8,14 +8,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.revature.models.CustomerAccount;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
-	String server = "localhost";
-	String url = "jdbc:postgresql://" + server + "/postgres";
-	String username = "postgres";
-	String password = "k0lj3rak";
+	private final String server = "localhost";
+	private final String url = "jdbc:postgresql://" + server + "/postgres";
+	private final String username = "postgres";
+	private final String password = "k0lj3rak";
+	private static final Logger loggy = Logger.getLogger(CustomerDAOImpl.class);
 	
 	public boolean insertAccount(CustomerAccount account) {
 		try(Connection connection = DriverManager.getConnection(url, username, password)){
@@ -30,8 +33,9 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when inserting account!");
 			e.printStackTrace();
+			
 		}
 		
 		return false;
@@ -51,7 +55,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when adding a savings account!");
 			e.printStackTrace();
 		}
 		
@@ -71,7 +75,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when adding a checking account!");
 			e.printStackTrace();
 		}
 		
@@ -92,7 +96,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when adding a joint account!");
 			e.printStackTrace();
 		}
 		
@@ -144,7 +148,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when getting account information!");
 			e.printStackTrace();
 		}
 		
@@ -163,18 +167,14 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			ResultSet rs = ps.executeQuery();
 			
-			int i = 0;
-			
 			while(rs.next()) {
 				
 				usernameList.add(rs.getString("customer_username"));
-				
-				i++;
 			}
 			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when getting all usernames from the database!");
 			e.printStackTrace();
 		}
 		
@@ -193,7 +193,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when depositing into savings!");
 			e.printStackTrace();
 		}
 		
@@ -212,7 +212,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when depositing into checking!");
 			e.printStackTrace();
 		}
 		
@@ -233,7 +233,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when depositing into a joint account!");
 			e.printStackTrace();
 		}
 		
@@ -252,7 +252,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when withdrawing from savings!");
 			e.printStackTrace();
 		}
 		return false;
@@ -270,7 +270,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when withdrawing from checking!");
 			e.printStackTrace();
 		}
 		return false;
@@ -290,7 +290,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when withdrawing from a joint account!");
 			e.printStackTrace();
 		}
 		
@@ -311,7 +311,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when creating a new transfer!");
 			e.printStackTrace();
 		}
 		
@@ -336,7 +336,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when getting all usernames waiting for transfer acceptance!");
 			e.printStackTrace();
 		}
 		
@@ -363,7 +363,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when getting the amount transferred by the username!");
 			e.printStackTrace();
 		}
 		
@@ -383,7 +383,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			loggy.warn("SQL Exception when deleting a transfer!");
 			e.printStackTrace();
 		}
 		

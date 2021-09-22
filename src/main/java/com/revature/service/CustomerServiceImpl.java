@@ -3,6 +3,8 @@ package com.revature.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.revature.models.CustomerAccount;
 import com.revature.repo.CustomerDAO;
 import com.revature.repo.CustomerDAOImpl;
@@ -10,6 +12,7 @@ import com.revature.repo.CustomerDAOImpl;
 public class CustomerServiceImpl implements CustomerService {
 
 	private final CustomerDAO cDao = new CustomerDAOImpl();
+	private static final Logger loggy = Logger.getLogger(CustomerServiceImpl.class);
 	
 	@Override
 	public boolean authenticate(String customerUsername, String customerPassword) {
@@ -23,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public CustomerAccount login(String customerUsername, String customerPassword) {
+	public CustomerAccount login(String customerUsername) {
 		CustomerAccount customerAccount = new CustomerAccount();
 		customerAccount = cDao.selectAccount(customerUsername);
 		return customerAccount;

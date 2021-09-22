@@ -9,7 +9,7 @@ public interface EmployeeService {
 	
 public boolean authenticate(String employeeUsername, String employeePassword);
 	
-	public EmployeeAccount login(String employeeUsername, String employeePassword);
+	public EmployeeAccount login(String employeeUsername);
 	
 	public boolean acceptApplication(String customerUsername);
 	

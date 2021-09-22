@@ -1,7 +1,12 @@
 package com.revature.service;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.revature.models.CustomerAccount;
 import com.revature.models.EmployeeAccount;
@@ -12,8 +17,9 @@ import com.revature.repo.EmployeeDAOImpl;
 
 public class EmployeeServiceImpl implements EmployeeService {
 
-	EmployeeDAO eDao = new EmployeeDAOImpl();
-	CustomerDAO cDao = new CustomerDAOImpl();
+	private final EmployeeDAO eDao = new EmployeeDAOImpl();
+	private final CustomerDAO cDao = new CustomerDAOImpl();
+	private static final Logger loggy = Logger.getLogger(EmployeeServiceImpl.class);
 	
 	@Override
 	public boolean authenticate(String employeeUsername, String employeePassword) {
@@ -27,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public EmployeeAccount login(String employeeUsername, String employeePassword) {
+	public EmployeeAccount login(String employeeUsername) {
 		EmployeeAccount account = new EmployeeAccount();
 		account = eDao.selectAccountByUsername(employeeUsername);
 		
@@ -66,8 +72,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public void viewTransactionLog() {
-		// TODO Auto-generated method stub
-		
+		try{
+
+				FileInputStream fstream = new FileInputStream("src/main/resources/log4j-bank-application.log");
+
+				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+				String strLine;
+
+			/* read log line by line */
+
+			while ((strLine = br.readLine()) != null) {
+
+			/* parse strLine to obtain what you want */
+
+				System.out.println (strLine);
+
+			}
+
+			fstream.close();
+
+			} catch (Exception e) {
+
+				System.err.println("Error: " + e.getMessage());
+
+			}
 	}
 
 	

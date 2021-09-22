@@ -6,7 +6,7 @@ public interface CustomerService {
 
 	public boolean authenticate(String customerUsername, String customerPassword);
 	
-	public CustomerAccount login(String customerUsername, String customerPassword);
+	public CustomerAccount login(String customerUsername);
 	
 	public boolean checkIfUsernameExists(String customerUsername);
 	
